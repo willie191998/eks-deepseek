@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik-sa
+      containers:
+        - name: traefik
+          image: traefik:v2.9
+          args:
+            - "--providers.kubernetesingress"
+            - "--entrypoints.web.address=:80"
+            - "--entrypoints.websecure.address=:443"
+            - "--certificatesresolvers.myresolver.acme.email=cloudspeed98@gmail.com"
+            - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+            - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumeMounts:
+            - mountPath: "/letsencrypt"
+              name: letsencrypt-storage
+      volumes:
+        - name: letsencrypt-storage
+          hostPath:
+            path: "/mnt/data/letsencrypt"
+            type: DirectoryOrCreate

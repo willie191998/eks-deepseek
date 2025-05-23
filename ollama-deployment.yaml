@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      containers:
+        - name: ollama
+          image: 664418975315.dkr.ecr.us-east-2.amazonaws.com/ollama
+          ports:
+            - containerPort: 11434
+          env:
+            - name: OLLAMA_HOST
+              value: "0.0.0.0"
+          volumeMounts:
+            - mountPath: "/root/.ollama"
+              name: ollama-storage
+      volumes:
+        - name: ollama-storage
+          hostPath:
+            path: "/mnt/data/ollama"
+            type: DirectoryOrCreate

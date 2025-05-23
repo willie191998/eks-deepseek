@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: fastapi-ingress
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: "Host(`superearner.online`)"
+      kind: Rule
+      services:
+        - name: fastapi-service
+          port: 8080
+  tls:
+    certResolver: myresolver

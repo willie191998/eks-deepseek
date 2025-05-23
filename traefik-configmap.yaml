@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-config
+data:
+  traefik.yml: |
+    entryPoints:
+      web:
+        address: ":80"
+      websecure:
+        address: ":443"
+
+    certificatesResolvers:
+      myresolver:
+        acme:
+          email: "cloudspeed98@gmail.com"
+          storage: "/letsencrypt/acme.json"
+          httpChallenge:
+            entryPoint: web
+
+    providers:
+      kubernetesCRD: {}
+      kubernetesIngress: {}
+
+    api:
+      dashboard: true

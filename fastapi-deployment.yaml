@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+        - name: fastapi
+          image: 664418975315.dkr.ecr.us-east-2.amazonaws.com/fastapi  # Use your AWS ECR image
+          ports:
+            - containerPort: 8080
+          env:
+            - name: OLLAMA_URL
+              value: "http://ollama-service:11434/api/generate"  # Use Kubernetes service name
